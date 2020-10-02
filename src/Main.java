@@ -16,9 +16,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		Game game = new GameOfLife();
-		game.init(); // gets the World
+		game.init(); 
 
-		// put the world (board) into the scene
 		Scene scene = new Scene(game.getWorld().gp);
 		
 		scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -31,7 +30,7 @@ public class Main extends Application {
 	    });
 		
 		stage.setScene(scene);
-		stage.setTitle("Game of Life v1");
+		stage.setTitle("Game of Life v2");
 		stage.show();
 
 	}

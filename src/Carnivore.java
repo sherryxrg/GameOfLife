@@ -1,26 +1,18 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.scene.paint.Color;
-/** 
- * A kind of Animal that eats plants to survive. 
- * @author sherryguo
- *
- */
-public class Herbivore extends Animalia {
-	
-	/** Herbivore constructor. **/
-	public Herbivore(Cell cell) {
+public class Carnivore extends Animalia {
+
+	public Carnivore(Cell cell) {
 		super(cell);
-		m_cellColor = "Yellow";
+		m_cellColor = "Red";
 		hungerLevel = 0;
 	}
 	
-	/** What happens in this turn. Varies by lifeform.**/
-	@Override 
+	/** One unit of time passes, it does its thing. **/
+	@Override
 	public void doturn() {
-		
-		hungerLevel++;
+        hungerLevel++;
 		
 		if (hungerLevel == fatalLevel) {
 			this.die();
@@ -28,14 +20,13 @@ public class Herbivore extends Animalia {
 			this.move();
 			this.giveBirth();
 		}
-		
+
 	}
-	
-	/** Herbivores can only move to adjacent squares no occupied by another herbivore.
-	 * 	If the square it moves to contains a plant, its hungerlevel is reset,
-	 *  and distances itself from doom... **/
-	public void move() { 
-		
+
+	/** Can move any nearby space unless occupied by carnivore or plant.
+	 * If space is not empty, it eats whatever is there. **/
+	@Override
+	public void move() {
 		int oldX;
 		int oldY;
 		int moveToIndex;
@@ -48,7 +39,7 @@ public class Herbivore extends Animalia {
 		m_newPos = myNeighbours.get(moveToIndex);
 		
 		// newPosition is initially the same as old position
-		if (!(m_newPos.getLifeform() instanceof Animalia)) {
+		if (!(m_newPos.getLifeform() instanceof Plantae)) {
 			
 			oldX = m_pos.getPosX();
 			oldY = m_pos.getPosY();
@@ -59,15 +50,15 @@ public class Herbivore extends Animalia {
 			m_pos.getWorld().setWorldCells(m_pos.getPosX(), m_pos.getPosY(), m_pos);
 			m_pos.getWorld().setWorldCells(oldX, oldY, new Cell(oldX, oldY));
 			
-			if (m_newPos.getLifeform() instanceof Plantae) {
+			if (m_newPos.getLifeform() instanceof Herbivore || m_newPos.getLifeform() instanceof Omnivore) {
 				this.eat();
 			}
 		}
 	}
-	
+
 	/** Rules of Life:
-	 * - If does not eat within 5 turns, dies. Eats only plants.
-	 * - to giveBirth() must have at least 1 mate, 2 spots with food, and 2 free spaces. **/
+	 * - If does not eat within 5 turns, dies. Eats everything else except its own kind.
+	 * - to giveBirth() must have at least 1 mate, 2 spots with food, and 3 free spaces. **/
 	@Override
 	public void giveBirth() {
 		ArrayList<Cell> birthSpaces = new ArrayList<>();
@@ -77,10 +68,10 @@ public class Herbivore extends Animalia {
 		ArrayList<Cell> myNeighbours = m_pos.getNeighbours();
 		for (Cell item: myNeighbours) {
 			
-			if (item.getLifeform() instanceof Plantae) {
+			if (item.getLifeform() instanceof Herbivore || item.getLifeform() instanceof Omnivore) {
 				foodcount++;
 				continue;
-			} else if (item.getLifeform() instanceof Herbivore) {
+			} else if (item.getLifeform() instanceof Carnivore) {
 				matecount++;
 				continue;
 			} else if (item.getLifeform() instanceof Animalia) {
@@ -89,16 +80,15 @@ public class Herbivore extends Animalia {
 				birthSpaces.add(item);
 		}
 		
-		if (matecount >= 1 && foodcount >= 2 && birthSpaces.size() >= 2) {
+		if (matecount >= 1 && foodcount >= 2 && birthSpaces.size() >= 3) {
 			Random rand = new Random();
 			int ln = rand.nextInt(birthSpaces.size());
 			
 				m_pos.getWorld().setWorldCells(birthSpaces.get(ln).getPosX(), birthSpaces.get(ln).getPosY(),
 						new Cell(birthSpaces.get(ln).getPosX(), birthSpaces.get(ln).getPosY(), 
-								"herbivore", m_pos.getWorld()));
+								"carnivore", m_pos.getWorld()));
 		}
-		
+
 	}
-	
 
 }

@@ -5,7 +5,7 @@
  */
 public class PlantList {
 
-	Plant[] plantHolder = new Plant[100];
+	Plantae[] plantHolder = new Plantae[100];
 	
 	
 	

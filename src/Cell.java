@@ -14,26 +14,34 @@ public class Cell {
 	public Lifeform m_lifeform;
 	
 	/** Cell's position **/
-	private int posX;
-    private int posY;
+	private int m_posX;
+    private int m_posY;
     
-    /** Creates a cell; the  **/
+    /** Creates a cell populated with lifeform at random  **/
 	public Cell(int x, int y, World w) {
 		
 		this.m_cellWorld = w;
 		
-		this.posX = x;
-		this.posY = y;
+		this.m_posX = x;
+		this.m_posY = y;
 		
 		int creationNum = RandomGenerator.nextNumber(99);
 		
-		if (creationNum >= 85) {
+		if (creationNum >= 80) {
 			
 			this.m_lifeform = new Herbivore(this);
 			
-		} else if (creationNum >= 65) {
+		} else if (creationNum >= 60) {
 			
 			this.m_lifeform = new PlantA(this); 
+			
+		} else if (creationNum >= 50) {
+			
+			this.m_lifeform = new Carnivore(this);
+			
+		} else if (creationNum >= 45) {
+			
+			this.m_lifeform = new Omnivore(this);
 			
 		} else {
 			
@@ -49,23 +57,33 @@ public class Cell {
 	public Cell(int oldX, int oldY) {
 		this.m_lifeform = null;
 		
-		this.posX = oldX;
-		this.posY = oldY;
+		this.m_posX = oldX;
+		this.m_posY = oldY;
 	}
 	
 	/**
-	 * Seperate constructor for germinating new plants.
-	 * @param plantX the x coordinate of where new plant will grow.
-	 * @param plantY the y coordinate of where new plant will grow.
+	 * Seperate constructor for germinating new babies.
+	 * @param plantX the x coordinate of where new baby will grow.
+	 * @param plantY the y coordinate of where new baby will grow.
 	 * @param p to differentiate from another constructor signature.
 	 * @param w the world (board) this cell belongs to. Otherwise it won't know world's height/width.
 	 */
-	public Cell(int plantX, int plantY, int p, World w) {
-		this.m_lifeform = new PlantA(this);
+	public Cell(int plantX, int plantY, String life, World w) {
+		
+		if (life.equals("plant")) {
+			this.m_lifeform = new PlantA(this);
+		} else if (life.equals("herbivore")) {
+			this.m_lifeform = new Herbivore(this);
+		} else if (life.equals("omnivore")) {
+			this.m_lifeform = new Omnivore(this);
+		} else if (life.equals("carnivore")) {
+			this.m_lifeform = new Carnivore(this);
+		}
+		
 		this.m_cellWorld = w;
 		
-		this.posX = plantX;
-		this.posY = plantY;
+		this.m_posX = plantX;
+		this.m_posY = plantY;
 	}
 	
 	/** Arraylist of 8 cells surrounding the cell. **/
@@ -73,9 +91,9 @@ public class Cell {
 		ArrayList<Cell> neighbours = new ArrayList<>();
 		Cell currCell;
 		
-		for (int row = posX-1; row < posX+2; row++) {
-			for (int col  = posY-1; col < posY+2; col++) {
-				if (row == posX && col == posY) {
+		for (int row = m_posX-1; row < m_posX+2; row++) {
+			for (int col  = m_posY-1; col < m_posY+2; col++) {
+				if (row == m_posX && col == m_posY) {
 					continue;
 				}
 
@@ -84,11 +102,9 @@ public class Cell {
                     neighbours.add(currCell);
       
                 }
-				
 			}
 		}
 		return neighbours;
-        
 	} 
 	
 	/** Get attributes of inhabitant lifeform.
@@ -108,19 +124,19 @@ public class Cell {
 	
 	/** Gets/sets the positions of this cell **/
 	public int getPosX() {
-		return this.posX;
+		return this.m_posX;
 	}
 	
 	public int getPosY() {
-		return this.posY;
+		return this.m_posY;
 	}
 	
 	public void setPosX(int newX) {
-		this.posX = newX;
+		this.m_posX = newX;
 	}
 	
 	public void setPosY(int newY) {
-		this.posY = newY;
+		this.m_posY = newY;
 	}
 	
 	/** Gets the world the cell is on. Exists to use methods in World class. **/

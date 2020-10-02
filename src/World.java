@@ -22,7 +22,7 @@ public class World extends GridPane {
 	public static GridPane gp;
 	
 	/** Dimensions of the world board. **/
-	private int height;
+	private int m_w_height;
 	private int width;
 	
 	/** A single square representing a cell of cells 2D array. **/
@@ -39,13 +39,13 @@ public class World extends GridPane {
 	public World(int bwidth, int bheight) {
 		
 		this.width = bwidth;
-		this.height = bheight;
+		this.m_w_height = bheight;
 		
 		gp = new GridPane();
-        this.cells = new Cell[width][height];
+        this.cells = new Cell[width][m_w_height];
 		
 		for (int row = 0; row < width; row++) {
-			for (int col = 0; col < height; col++) {
+			for (int col = 0; col < m_w_height; col++) {
 				square = new Rectangle(30, 30);
 				
 				this.cells[row][col] = new Cell(row, col, this);
@@ -61,7 +61,7 @@ public class World extends GridPane {
 	
 	/** Gets the height and width of the 2D cells array. **/
 	public int getBoardHeight() {
-		return this.height;
+		return this.m_w_height;
 	}
 	
 	public int getBoardWidth() {
@@ -73,11 +73,9 @@ public class World extends GridPane {
 		return cells;
 	}
  
-	
 	/** Pushes the world into the next cycle. **/
 	public void nextCycle() {
 		this.updateCells();
-		
 	}
 	
 	/** Gets the cell at a specified location. **/
@@ -85,16 +83,22 @@ public class World extends GridPane {
 		return this.cells[x][y];
 	}
 	
-	/** Goes through each cell occupied by a lifeform, and does its turn. **/
+	/** Goes through each cell occupied by a lifeform, and does its turn. 
+	 *  NEW: Plants will seed first before any of the animals give birth.**/
 	public void updateCells() {
 		
 		ArrayList<Lifeform> living = this.getOccupiedCells();
 		
 		for (Lifeform item: living) {
-			item.doturn();
-//			System.out.println(item.getColor() + " has finished a turn.");
-//			System.out.println("-------------------");
-//			
+			if (item instanceof PlantA) {
+				item.doturn();		
+			}
+		}
+		
+		for (Lifeform item: living) {
+			if (item instanceof Animalia) {
+				item.doturn();		
+			}
 		}
 		
 	}
@@ -105,21 +109,16 @@ public class World extends GridPane {
 	 *  
 	 *  @return arraylist of all occupants currently on board. **/
 	public ArrayList<Lifeform> getOccupiedCells() {
-		
 		ArrayList<Lifeform> occupants = new ArrayList<Lifeform>();
 		
-		for (int row = 0; row < height; row++) {
+		for (int row = 0; row < m_w_height; row++) {
 			for (int col = 0; col < width; col++) {
 				if (cells[row][col].getLifeform() != null) {
-					
 					occupants.add(cells[row][col].getLifeform());
-					//System.out.println("Occupant added from " + row + ", " + col);
 				}
 			}
 		}
-		
 		return occupants;
-		
 	}
 	
 	/** Important! After lifeforms change cell locations,
