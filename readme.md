@@ -1,5 +1,6 @@
 # Game of Life
 ### A colorful version of Conway's 1970 game featuring plants and animals.
+![](GOL.gif)
 ------------------------------
 ### Rules of the Game:
 1. Each plant has exactly 4 plant neighbours and 3 or more empty spaces, will seed all empty spaces
